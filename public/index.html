@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Instagram Multi Tab Proxy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body{font-family:Arial;background:#111;color:white;text-align:center;padding:30px}
+    input,select,button{padding:10px;margin:10px;width:90%;max-width:500px;border-radius:10px;border:1px solid #444}
+    button{background:#ff006a;color:white;border:none;font-size:18px;cursor:pointer}
+  </style>
+</head>
+<body>
+
+  <h2>Instagram Multi Tab Opener (Proxy Mode)</h2>
+
+  <input id="insta" placeholder="Paste Instagram Reel/Post URL">
+
+  <select id="count">
+    <option value="3">Open 3 Tabs</option>
+    <option value="5">Open 5 Tabs</option>
+    <option value="7">Open 7 Tabs</option>
+    <option value="9">Open 9 Tabs</option>
+    <option value="25">Open 25 Tabs</option>
+  </select>
+
+  <select id="country">
+    <option value="US">USA</option>
+    <option value="CA">Canada</option>
+    <option value="GB">UK</option>
+    <option value="DE">Germany</option>
+  </select>
+
+  <button onclick="openTabs()">Open via Proxies</button>
+
+  <script>
+    async function openTabs() {
+      const url = document.getElementById("insta").value.trim();
+      const count = parseInt(document.getElementById("count").value);
+      const country = document.getElementById("country").value;
+
+      if (!url.includes("instagram.com")) return alert("Invalid Instagram URL!");
+
+      const res = await fetch(`/api/get-proxies?country=${country}&limit=${count}`);
+      const data = await res.json();
+
+      if (!data.proxies.length) return alert("No proxies available right now!");
+
+      data.proxies.forEach(proxy => {
+        const finalUrl = `/fetch?proxy=${proxy}&url=${encodeURIComponent(url)}`;
+        window.open(finalUrl, "_blank");
+      });
+    }
+  </script>
+
+</body>
+</html>
